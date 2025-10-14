@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Campus - University Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/dayjs.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-link {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #1d4ed8;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- App Container -->
+    <div id="app">
+
+        <!-- New Landing Page -->
+        <div id="landing-page">
+            <header class="bg-white/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-sm">
+                <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-blue-700">Stellar Campus</h1>
+                    <button id="show-auth-login-btn" class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors">Login</button>
+                </div>
+            </header>
+
+            <main>
+                <!-- Hero Section -->
+                <section class="bg-gradient-to-br from-blue-600 to-purple-700 text-white pt-32 pb-20 text-center">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-5xl font-extrabold mb-4 drop-shadow-lg">Your Campus, Connected</h2>
+                        <p class="text-lg max-w-2xl mx-auto mb-8 text-blue-100">All your university resources in one place. Access timetables, results, announcements, and events with ease.</p>
+                        <button id="show-auth-register-btn" class="bg-white text-blue-700 font-bold px-8 py-3 rounded-full text-lg hover:bg-blue-100 transition-transform hover:scale-105">Get Started</button>
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section class="py-20 bg-slate-50">
+                    <div class="container mx-auto px-6">
+                        <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">Portal Features</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Feature 1 -->
+                            <div class="feature-card bg-white p-8 rounded-xl shadow-lg text-center">
+                                <div class="bg-teal-100 text-teal-600 w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-6 text-3xl">📢</div>
+                                <h4 class="text-xl font-semibold mb-2">Announcements</h4>
+                                <p class="text-gray-600">Stay updated with the latest news and official announcements from the university.</p>
+                            </div>
+                            <!-- Feature 2 -->
+                            <div class="feature-card bg-white p-8 rounded-xl shadow-lg text-center">
+                                <div class="bg-pink-100 text-pink-600 w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-6 text-3xl">📅</div>
+                                <h4 class="text-xl font-semibold mb-2">Events Calendar</h4>
+                                <p class="text-gray-600">Never miss a campus event, from guest lectures to cultural festivals.</p>
+                            </div>
+                            <!-- Feature 3 -->
+                            <div class="feature-card bg-white p-8 rounded-xl shadow-lg text-center">
+                                <div class="bg-yellow-100 text-yellow-600 w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-6 text-3xl">🎓</div>
+                                <h4 class="text-xl font-semibold mb-2">Results</h4>
+                                <p class="text-gray-600">Access your semester results and academic performance reports instantly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dynamic Content Section -->
+                 <section class="py-20 bg-white">
+                    <div class="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-6">Latest News</h3>
+                            <div id="landing-announcements" class="space-y-4">
+                                <!-- Landing announcements injected by JS -->
+                            </div>
+                        </div>
+                         <div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-6">Upcoming Events</h3>
+                            <div id="landing-events" class="space-y-4">
+                                <!-- Landing events injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <footer class="bg-gray-800 text-white py-8">
+                <div class="container mx-auto px-6 text-center">
+                    <p>&copy; 2025 Stellar Campus. All Rights Reserved.</p>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Login/Register Page (Now a modal) -->
+        <div id="auth-page" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="w-full max-w-md bg-white rounded-xl shadow-lg relative">
+                <button id="close-auth-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+                <div class="p-8 space-y-8">
+                    <div id="login-container">
+                        <h2 class="text-3xl font-bold text-center text-gray-900">Portal Login</h2>
+                        <form id="login-form" class="mt-8 space-y-6">
+                            <div class="rounded-md shadow-sm -space-y-px">
+                                <div><input id="login-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email address"></div>
+                                <div><input id="login-password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Password"></div>
+                            </div>
+                            <p id="login-error" class="text-sm text-red-500 text-center hidden">Invalid email or password.</p>
+                            <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Sign in</button></div>
+                        </form>
+                        <p class="mt-2 text-sm text-center text-gray-600">Don't have an account? <a href="#" id="show-register" class="font-medium text-blue-600 hover:text-blue-500">Register here</a></p>
+                    </div>
+
+                    <div id="register-container" class="hidden">
+                        <h2 class="text-3xl font-bold text-center text-gray-900">Create Account</h2>
+                        <form id="register-form" class="mt-8 space-y-6">
+                             <div class="rounded-md shadow-sm -space-y-px">
+                                 <div><input name="name" type="text" autocomplete="name" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md" placeholder="Full Name"></div>
+                                 <div><input name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900" placeholder="Email address"></div>
+                                 <div><input name="password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md" placeholder="Password"></div>
+                             </div>
+                             <p id="register-error" class="text-sm text-red-500 text-center hidden">This email is already registered.</p>
+                             <p id="register-success" class="text-sm text-green-500 text-center hidden">Registration successful! Please log in.</p>
+                             <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Register</button></div>
+                        </form>
+                        <p class="mt-2 text-sm text-center text-gray-600">Already have an account? <a href="#" id="show-login" class="font-medium text-blue-600 hover:text-blue-500">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Portal Interface -->
+        <div id="main-portal" class="hidden">
+            <!-- Sidebar Navigation -->
+            <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen bg-blue-700 text-white transition-transform -translate-x-full sm:translate-x-0">
+                <div class="p-4"><h1 class="text-2xl font-bold">Stellar Campus</h1></div>
+                <nav class="flex flex-col p-2 space-y-1" id="main-nav"></nav>
+            </aside>
+            <div class="sm:ml-64">
+                <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-30">
+                     <button id="menu-toggle" class="sm:hidden text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
+                    <h2 id="page-title" class="text-xl font-semibold text-gray-800">Dashboard</h2>
+                    <div class="flex items-center space-x-4">
+                        <span id="user-name" class="font-medium text-gray-700"></span>
+                        <img id="user-avatar" class="w-10 h-10 rounded-full" src="https://placehold.co/100x100/E2E8F0/475569?text=U" alt="User Avatar">
+                        <button id="logout-btn" class="text-sm text-red-500 hover:underline">Logout</button>
+                    </div>
+                </header>
+                <main id="main-content" class="p-6 bg-slate-100 min-h-screen">
+                    <div id="dashboard-page" class="portal-page"></div>
+                    <div id="announcements-page" class="portal-page hidden"><div class="grid gap-6" id="announcements-list"></div></div>
+                    <div id="events-page" class="portal-page hidden"><div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" id="events-list"></div></div>
+                    <div id="calendar-page" class="portal-page hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex items-center justify-between mb-4"><button id="prev-month" class="px-3 py-1 bg-blue-500 text-white rounded-md">&lt; Prev</button><h3 id="month-year" class="text-xl font-semibold"></h3><button id="next-month" class="px-3 py-1 bg-blue-500 text-white rounded-md">Next &gt;</button></div><div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center"></div></div></div>
+                    <div id="timetable-page" class="portal-page hidden"><div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto"><table class="w-full text-left border-collapse"><thead id="timetable-head"></thead><tbody id="timetable-body"></tbody></table></div></div>
+                    <div id="results-page" class="portal-page hidden"><div class="space-y-8" id="results-container"></div></div>
+                    <div id="archive-page" class="portal-page hidden"><div class="bg-white p-4 rounded-lg shadow-md mb-6"><input type="text" id="archive-search" placeholder="Search past events..." class="w-full px-3 py-2 border rounded-md"></div><div class="grid gap-6" id="archive-list"></div></div>
+                    <div id="profile-page" class="portal-page hidden"><div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto"><h3 class="text-2xl font-bold mb-6">My Profile</h3><form id="profile-form"><div class="space-y-4"><div><label class="block text-sm font-medium text-gray-700">Full Name</label><input type="text" id="profile-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></div><div><label class="block text-sm font-medium text-gray-700">Email Address</label><input type="email" id="profile-email" readonly class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100"></div><div><label class="block text-sm font-medium text-gray-700">Role</label><input type="text" id="profile-role" readonly class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100"></div><div class="pt-4"><button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save Changes</button></div></div></form></div></div>
+                    <div id="admin-announcements-page" class="portal-page hidden"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-2xl font-bold mb-4">Manage Announcements</h3><form id="add-announcement-form" class="mb-6 space-y-4"><input type="text" id="announcement-title" placeholder="Announcement Title" required class="w-full p-2 border rounded"><textarea id="announcement-content" placeholder="Content" rows="4" required class="w-full p-2 border rounded"></textarea><button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Add Announcement</button></form><div id="admin-announcements-list" class="space-y-4"></div></div></div>
+                    <div id="admin-events-page" class="portal-page hidden"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-2xl font-bold mb-4">Manage Events</h3><form id="add-event-form" class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" id="event-title" placeholder="Event Title" required class="p-2 border rounded"><input type="date" id="event-date" required class="p-2 border rounded"><input type="text" id="event-location" placeholder="Location" required class="p-2 border rounded"><textarea id="event-description" placeholder="Description" rows="3" required class="md:col-span-2 p-2 border rounded"></textarea><button type="submit" class="md:col-span-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Add Event</button></form><div id="admin-events-list" class="space-y-4"></div></div></div>
+                    <div id="admin-timetable-page" class="portal-page hidden"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-2xl font-bold mb-4">Update Timetable</h3><p class="text-gray-600">This is a placeholder for the timetable management interface.</p></div></div>
+                    <div id="admin-results-page" class="portal-page hidden"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-2xl font-bold mb-4">Update Results</h3><p class="text-gray-600">This is a placeholder for the results management interface.</p></div></div>
+                </main>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            let db;
+
+            function loadDb() {
+                const dbJson = localStorage.getItem('universityPortalDB');
+                if (dbJson) {
+                    db = JSON.parse(dbJson);
+                } else {
+                    db = {
+                        users: [
+                            { id: 1, name: 'Jane Admin', email: 'admin@university.com', password: 'password123', role: 'admin', avatar: 'https://placehold.co/100x100/FBCFE8/86198F?text=JA' }
+                        ],
+                        announcements: [
+                            { id: 1, title: 'Mid-term Exams Schedule', content: 'The schedule for the upcoming mid-term examinations has been published.', date: '2025-10-10' },
+                            { id: 2, title: 'Library Closure for Maintenance', content: 'The central library will be closed this weekend for annual maintenance.', date: '2025-10-14' },
+                        ],
+                        events: [
+                             { id: 1, title: 'Guest Lecture on AI', description: 'A special lecture by Dr. Alan Grant.', date: '2025-10-20', location: 'Main Auditorium' },
+                            { id: 2, title: 'Career Fair 2025', description: 'Meet recruiters from top companies.', date: '2025-10-25', location: 'University Gymnasium' },
+                            { id: 3, title: 'Hackathon Kick-off', description: 'The 24-hour coding challenge begins.', date: '2025-11-01', location: 'CS Block' },
+                            { id: 4, title: 'Drama Club Auditions', description: 'Auditions for the annual university play.', date: '2025-09-15', location: 'Theatre Hall' },
+                        ],
+                        timetable: {'Monday': [{ time: '09:00-11:00', course: 'CS101', location: 'Room 404' }], 'Tuesday': [], 'Wednesday': [], 'Thursday': [], 'Friday': []},
+                        results: {'Semester 1': [{ course: 'CS101', grade: 'A' }]}
+                    };
+                    saveDb();
+                }
+            }
+            
+            function saveDb() {
+                localStorage.setItem('universityPortalDB', JSON.stringify(db));
+            }
+            
+            loadDb();
+
+            let currentUser = null;
+            let currentCalendarDate = dayjs();
+
+            // --- DOM SELECTORS ---
+            const landingPage = document.getElementById('landing-page');
+            const authPage = document.getElementById('auth-page');
+            const mainPortal = document.getElementById('main-portal');
+            const showAuthLoginBtn = document.getElementById('show-auth-login-btn');
+            const showAuthRegisterBtn = document.getElementById('show-auth-register-btn');
+            const closeAuthBtn = document.getElementById('close-auth-btn');
+            const loginContainer = document.getElementById('login-container');
+            const registerContainer = document.getElementById('register-container');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const showRegisterLink = document.getElementById('show-register');
+            const showLoginLink = document.getElementById('show-login');
+            const loginError = document.getElementById('login-error');
+            const registerError = document.getElementById('register-error');
+            const registerSuccess = document.getElementById('register-success');
+            const logoutBtn = document.getElementById('logout-btn');
+            const userNameEl = document.getElementById('user-name');
+            const userAvatarEl = document.getElementById('user-avatar');
+            const pageTitleEl = document.getElementById('page-title');
+            const mainNav = document.getElementById('main-nav');
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            // --- LANDING PAGE LOGIC ---
+            function renderLandingPageContent() {
+                const announcementsContainer = document.getElementById('landing-announcements');
+                const eventsContainer = document.getElementById('landing-events');
+
+                announcementsContainer.innerHTML = db.announcements
+                    .sort((a,b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 2)
+                    .map(a => `<div class="bg-slate-100 p-4 rounded-lg">
+                                <p class="font-semibold text-gray-800">${a.title}</p>
+                                <p class="text-sm text-gray-600">${a.content}</p>
+                              </div>`).join('');
+
+                eventsContainer.innerHTML = db.events
+                    .filter(e => new Date(e.date) >= new Date())
+                    .sort((a,b) => new Date(a.date) - new Date(b.date))
+                    .slice(0, 2)
+                    .map(e => `<div class="bg-slate-100 p-4 rounded-lg">
+                                <p class="font-semibold text-gray-800">${e.title}</p>
+                                <p class="text-sm text-gray-600">${dayjs(e.date).format('MMMM D')} at ${e.location}</p>
+                              </div>`).join('');
+            }
+            renderLandingPageContent();
+
+
+            // --- AUTHENTICATION LOGIC ---
+            const showAuthPage = (isRegister = false) => {
+                authPage.classList.remove('hidden');
+                if (isRegister) {
+                    loginContainer.classList.add('hidden');
+                    registerContainer.classList.remove('hidden');
+                } else {
+                    loginContainer.classList.remove('hidden');
+                    registerContainer.classList.add('hidden');
+                }
+            };
+            
+            showAuthLoginBtn.addEventListener('click', () => showAuthPage(false));
+            showAuthRegisterBtn.addEventListener('click', () => showAuthPage(true));
+            closeAuthBtn.addEventListener('click', () => authPage.classList.add('hidden'));
+
+            showRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginContainer.classList.add('hidden');
+                registerContainer.classList.remove('hidden');
+                registerError.classList.add('hidden');
+                registerSuccess.classList.add('hidden');
+            });
+            
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+                loginError.classList.add('hidden');
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = loginForm.email.value;
+                const password = loginForm.password.value;
+                const user = db.users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    loginError.classList.add('hidden');
+                    authPage.classList.add('hidden');
+                    landingPage.classList.add('hidden');
+                    mainPortal.classList.remove('hidden');
+                    initializeApp();
+                } else {
+                    loginError.classList.remove('hidden');
+                }
+            });
+
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                registerError.classList.add('hidden');
+                registerSuccess.classList.add('hidden');
+
+                const name = e.target.name.value;
+                const email = e.target.email.value;
+                const password = e.target.password.value;
+
+                if (db.users.some(u => u.email === email)) {
+                    registerError.classList.remove('hidden');
+                    return;
+                }
+
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: 'student',
+                    avatar: `https://placehold.co/100x100/BFDBFE/1E3A8A?text=${name.split(' ').map(n => n[0]).join('')}`
+                };
+
+                db.users.push(newUser);
+                saveDb();
+
+                registerForm.reset();
+                registerSuccess.classList.remove('hidden');
+                setTimeout(() => {
+                    showLoginLink.click();
+                }, 2000);
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                currentUser = null;
+                mainPortal.classList.add('hidden');
+                landingPage.classList.remove('hidden');
+                renderLandingPageContent(); // Refresh landing page data
+                mainNav.innerHTML = '';
+                loginForm.reset();
+            });
+
+            // --- APP INITIALIZATION ---
+            function initializeApp() {
+                userNameEl.textContent = currentUser.name;
+                userAvatarEl.src = currentUser.avatar;
+                userAvatarEl.alt = currentUser.name;
+                setupNavigation();
+                showPage('dashboard-page');
+            }
+
+            // --- NAVIGATION & PAGE RENDERING ---
+            // (The rest of the JS is largely the same, controlling the internal portal pages)
+            function setupNavigation() {
+                mainNav.innerHTML = '';
+                const studentLinks = [
+                    { icon: '🏠', text: 'Dashboard', page: 'dashboard-page' },
+                    { icon: '📢', text: 'Announcements', page: 'announcements-page' },
+                    { icon: '🎉', text: 'Events', page: 'events-page' },
+                    { icon: '📅', text: 'Events Calendar', page: 'calendar-page' },
+                    { icon: '🕒', text: 'Timetable', page: 'timetable-page' },
+                    { icon: '🎓', text: 'Results', page: 'results-page' },
+                    { icon: '📚', text: 'Events Archive', page: 'archive-page' },
+                    { icon: '👤', text: 'Profile', page: 'profile-page' }
+                ];
+                const adminLinks = [
+                    { icon: '🏠', text: 'Dashboard', page: 'dashboard-page' },
+                    { icon: '✍️', text: 'Manage Announcements', page: 'admin-announcements-page' },
+                    { icon: '🛠️', text: 'Manage Events', page: 'admin-events-page' },
+                    { icon: '🗓️', text: 'Update Timetable', page: 'admin-timetable-page' },
+                    { icon: '📈', text: 'Update Results', page: 'admin-results-page' },
+                    { icon: '👤', text: 'Profile', page: 'profile-page' }
+                ];
+                
+                const links = currentUser.role === 'admin' ? adminLinks : studentLinks;
+
+                links.forEach(link => {
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.dataset.page = link.page;
+                    a.className = 'sidebar-link flex items-center p-2 rounded-lg text-lg';
+                    a.innerHTML = `<span class="mr-3">${link.icon}</span> ${link.text}`;
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        showPage(link.page);
+                        if (!sidebar.classList.contains('-translate-x-full')) {
+                            sidebar.classList.add('-translate-x-full');
+                        }
+                    });
+                    mainNav.appendChild(a);
+                });
+            }
+
+            function showPage(pageId) {
+                document.querySelectorAll('.portal-page').forEach(page => page.classList.add('hidden'));
+                document.getElementById(pageId).classList.remove('hidden');
+
+                const activeLink = document.querySelector(`.sidebar-link[data-page="${pageId}"]`);
+                document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    pageTitleEl.textContent = activeLink.textContent.trim().split(' ').slice(1).join(' ');
+                }
+
+                const renderFunctions = {
+                    'dashboard-page': renderDashboard,
+                    'announcements-page': renderAnnouncements,
+                    'events-page': renderEvents,
+                    'calendar-page': renderCalendar,
+                    'timetable-page': renderTimetable,
+                    'results-page': renderResults,
+                    'archive-page': renderArchive,
+                    'profile-page': renderProfile,
+                    'admin-announcements-page': renderAdminAnnouncements,
+                    'admin-events-page': renderAdminEvents
+                };
+                
+                if(renderFunctions[pageId]) {
+                    renderFunctions[pageId]();
+                }
+            }
+            
+            menuToggle.addEventListener('click', () => sidebar.classList.toggle('-translate-x-full'));
+
+            function renderDashboard() {
+                const container = document.getElementById('dashboard-page');
+                if (currentUser.role === 'student') {
+                    const latestAnnouncement = db.announcements.sort((a,b) => new Date(b.date) - new Date(a.date))[0];
+                    const upcomingEvent = db.events.filter(e => new Date(e.date) >= new Date()).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+                    container.innerHTML = `<h3 class="text-2xl font-bold mb-6 text-gray-800">Welcome, ${currentUser.name.split(' ')[0]}!</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h4 class="font-bold text-lg mb-2">Latest Announcement</h4><h5 class="font-semibold text-blue-600">${latestAnnouncement.title}</h5><p class="text-gray-600 text-sm mt-1">${latestAnnouncement.content.substring(0, 100)}...</p><a href="#" data-page="announcements-page" class="nav-redirect text-blue-500 hover:underline text-sm mt-2 inline-block">Read more</a></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h4 class="font-bold text-lg mb-2">Upcoming Event</h4><h5 class="font-semibold text-purple-600">${upcomingEvent.title}</h5><p class="text-gray-600 text-sm mt-1">${dayjs(upcomingEvent.date).format('MMMM D, YYYY')} at ${upcomingEvent.location}</p><a href="#" data-page="events-page" class="nav-redirect text-purple-500 hover:underline text-sm mt-2 inline-block">View details</a></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h4 class="font-bold text-lg mb-2">Today's Schedule</h4><p class="text-gray-600 text-sm mt-1">No classes scheduled for today.</p><a href="#" data-page="timetable-page" class="nav-redirect text-green-500 hover:underline text-sm mt-2 inline-block">View full timetable</a></div>
+                        </div>`;
+                } else {
+                     container.innerHTML = `<h3 class="text-2xl font-bold mb-6 text-gray-800">Admin Dashboard</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><h4 class="font-bold text-lg">Total Announcements</h4><p class="text-3xl font-bold text-blue-600">${db.announcements.length}</p></div><a href="#" data-page="admin-announcements-page" class="nav-redirect px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">Manage</a></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><h4 class="font-bold text-lg">Total Events</h4><p class="text-3xl font-bold text-purple-600">${db.events.length}</p></div><a href="#" data-page="admin-events-page" class="nav-redirect px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Manage</a></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><h4 class="font-bold text-lg">Registered Users</h4><p class="text-3xl font-bold text-green-600">${db.users.length}</p></div></div>
+                        </div>`;
+                }
+                container.querySelectorAll('.nav-redirect').forEach(link => link.addEventListener('click', e => { e.preventDefault(); showPage(e.target.dataset.page); }));
+            }
+
+            function renderAnnouncements() {
+                document.getElementById('announcements-list').innerHTML = db.announcements.sort((a,b) => new Date(b.date) - new Date(a.date)).map(a => `<div class="bg-white p-6 rounded-lg shadow-md"><p class="text-sm text-gray-500">${dayjs(a.date).format('MMMM D, YYYY')}</p><h3 class="text-xl font-bold text-blue-700 mt-1">${a.title}</h3><p class="text-gray-700 mt-2">${a.content}</p></div>`).join('');
+            }
+
+            function renderEvents() {
+                 document.getElementById('events-list').innerHTML = db.events.filter(e => new Date(e.date) >= new Date()).sort((a,b) => new Date(a.date) - new Date(b.date)).map(e => `<div class="bg-white p-6 rounded-lg shadow-md flex flex-col"><div class="mb-4"><p class="text-sm text-gray-500">${dayjs(e.date).format('dddd, MMMM D, YYYY')}</p><h3 class="text-xl font-bold text-purple-700 mt-1">${e.title}</h3><p class="text-gray-500 text-sm mt-1">📍 ${e.location}</p></div><p class="text-gray-700 mt-2 flex-grow">${e.description}</p><button class="mt-4 bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 w-full">RSVP</button></div>`).join('');
+            }
+            
+            function renderCalendar() {
+                const calendarGrid = document.getElementById('calendar-grid');
+                document.getElementById('month-year').textContent = currentCalendarDate.format('MMMM YYYY');
+                calendarGrid.innerHTML = '';
+                const startOfMonth = currentCalendarDate.startOf('month'), endOfMonth = currentCalendarDate.endOf('month');
+                const daysInMonth = endOfMonth.date(), startDayOfWeek = startOfMonth.day();
+                ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => { calendarGrid.innerHTML += `<div class="font-bold text-gray-600">${day}</div>`; });
+                for (let i = 0; i < startDayOfWeek; i++) calendarGrid.innerHTML += `<div></div>`;
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = startOfMonth.date(day);
+                    const eventsOnDay = db.events.filter(e => dayjs(e.date).isSame(date, 'day'));
+                    const isToday = dayjs().isSame(date, 'day');
+                    let dayHtml = `<div class="p-2 border rounded-md min-h-[100px] flex flex-col ${isToday ? 'bg-blue-100' : 'bg-white'}"><span class="font-semibold ${isToday ? 'text-blue-600' : ''}">${day}</span>`;
+                    if(eventsOnDay.length > 0) eventsOnDay.forEach(event => { dayHtml += `<div class="text-xs bg-purple-200 text-purple-800 p-1 rounded mt-1 truncate">${event.title}</div>`; });
+                    calendarGrid.innerHTML += dayHtml + `</div>`;
+                }
+            }
+            document.getElementById('prev-month').addEventListener('click', () => { currentCalendarDate = currentCalendarDate.subtract(1, 'month'); renderCalendar(); });
+            document.getElementById('next-month').addEventListener('click', () => { currentCalendarDate = currentCalendarDate.add(1, 'month'); renderCalendar(); });
+
+            function renderTimetable() {
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                document.getElementById('timetable-head').innerHTML = `<tr><th class="p-2 border">Time</th>${days.map(d => `<th class="p-2 border">${d}</th>`).join('')}</tr>`;
+                const timeSlots = ['09:00-11:00', '10:00-12:00', '13:00-15:00', '14:00-16:00'];
+                document.getElementById('timetable-body').innerHTML = timeSlots.map(slot => `<tr><td class="p-2 border font-semibold">${slot}</td>${days.map(day => { const session = db.timetable[day]?.find(s => s.time === slot); return `<td class="p-2 border">${session ? `<div class="font-bold">${session.course}</div><div class="text-sm text-gray-600">${session.location}</div>` : ''}</td>`; }).join('')}</tr>`).join('');
+            }
+            
+            function renderResults() {
+                document.getElementById('results-container').innerHTML = Object.keys(db.results).map(semester => `<div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-xl font-bold mb-4">${semester}</h3><table class="w-full"><thead class="bg-gray-50"><tr><th class="p-2 text-left">Course</th><th class="p-2 text-left">Grade</th></tr></thead><tbody>${db.results[semester].map(res => `<tr class="border-b"><td class="p-2">${res.course}</td><td class="p-2 font-bold">${res.grade}</td></tr>`).join('')}</tbody></table></div>`).join('');
+            }
+
+            function renderArchive(searchTerm = '') {
+                const container = document.getElementById('archive-list');
+                const pastEvents = db.events.filter(e => new Date(e.date) < new Date() && e.title.toLowerCase().includes(searchTerm.toLowerCase())).sort((a,b) => new Date(b.date) - new Date(a.date));
+                container.innerHTML = pastEvents.length > 0 ? pastEvents.map(e => `<div class="bg-white p-4 rounded-lg shadow-md"><p class="text-sm text-gray-500">${dayjs(e.date).format('MMMM D, YYYY')}</p><h3 class="text-lg font-semibold">${e.title}</h3><p class="text-gray-600 text-sm">📍 ${e.location}</p></div>`).join('') : '<p>No past events found.</p>';
+            }
+            document.getElementById('archive-search').addEventListener('input', (e) => renderArchive(e.target.value));
+
+            function renderProfile() {
+                document.getElementById('profile-name').value = currentUser.name;
+                document.getElementById('profile-email').value = currentUser.email;
+                document.getElementById('profile-role').value = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+            }
+            document.getElementById('profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newName = document.getElementById('profile-name').value;
+                currentUser.name = newName;
+                db.users.find(u => u.id === currentUser.id).name = newName;
+                saveDb();
+                userNameEl.textContent = newName;
+                alert('Profile updated successfully!');
+            });
+            
+            function renderAdminAnnouncements() {
+                const listContainer = document.getElementById('admin-announcements-list');
+                listContainer.innerHTML = db.announcements.sort((a,b) => new Date(b.date) - new Date(a.date)).map(a => `<div class="border p-4 rounded-md flex justify-between items-center"><div><p class="font-bold">${a.title}</p><p class="text-sm text-gray-500">${dayjs(a.date).format('MMM D, YYYY')}</p></div><button data-id="${a.id}" class="delete-announcement-btn px-3 py-1 bg-red-500 text-white rounded text-sm">Delete</button></div>`).join('');
+                listContainer.querySelectorAll('.delete-announcement-btn').forEach(btn => btn.addEventListener('click', (e) => { db.announcements = db.announcements.filter(ann => ann.id !== parseInt(e.target.dataset.id)); saveDb(); renderAdminAnnouncements(); }));
+            }
+            document.getElementById('add-announcement-form').addEventListener('submit', (e) => { e.preventDefault(); db.announcements.push({ id: Date.now(), title: e.target.elements['announcement-title'].value, content: e.target.elements['announcement-content'].value, date: dayjs().format('YYYY-MM-DD') }); saveDb(); renderAdminAnnouncements(); e.target.reset(); });
+
+            function renderAdminEvents() {
+                const listContainer = document.getElementById('admin-events-list');
+                listContainer.innerHTML = db.events.sort((a,b) => new Date(b.date) - new Date(a.date)).map(evt => `<div class="border p-4 rounded-md flex justify-between items-center"><div><p class="font-bold">${evt.title}</p><p class="text-sm text-gray-500">${dayjs(evt.date).format('MMM D, YYYY')} - ${evt.location}</p></div><button data-id="${evt.id}" class="delete-event-btn px-3 py-1 bg-red-500 text-white rounded text-sm">Delete</button></div>`).join('');
+                listContainer.querySelectorAll('.delete-event-btn').forEach(btn => btn.addEventListener('click', (e) => { db.events = db.events.filter(evt => evt.id !== parseInt(e.target.dataset.id)); saveDb(); renderAdminEvents(); }));
+            }
+            document.getElementById('add-event-form').addEventListener('submit', (e) => { e.preventDefault(); db.events.push({ id: Date.now(), title: e.target.elements['event-title'].value, date: e.target.elements['event-date'].value, location: e.target.elements['event-location'].value, description: e.target.elements['event-description'].value }); saveDb(); renderAdminEvents(); e.target.reset(); });
+        });
+    </script>
+
+</body>
+</html>
+
